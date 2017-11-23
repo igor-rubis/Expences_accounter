@@ -31,4 +31,8 @@ function postData(category, amount) {
   var year = date.getFullYear();
   var month = months[date.getMonth()];
   var day = date.getDate();
+
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+
+  var sheet = spreadsheet.getSheetByName(year) ?: spreadsheet.insertSheet(year);
 }
