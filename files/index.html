@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+    <style>
+    label {
+        width: 150px;
+        display: inline-block;
+    }
+    </style>
+    
+</head>
+<body>
+<div id="form">
+    <p>
+        <label for="category">Select category:</label>
+        <select id="category"></select>
+    </p>
+    <p>
+        <label for="amount">Set amount: </label>
+        <input id="amount" type="text">
+    </p>
+    <p>
+        <input type="button" onclick="submit()" value="Submit">
+    </p>
+</div>
+
+<script>
+    function submit() {
+      var category = document.getElementById('category').value;
+      var amount = document.getElementById('amount').value;
+      google.script.run.postData(category, amount);
+      
+      document.getElementById('amount').value = '';
+    }
+    
+    function mapCategories(categories) {
+      categories.forEach(function(item, i, categories) {
+        var option = window.document.createElement('option');
+        option.text = item;
+        document.getElementById("category").appendChild(option);
+      });
+    }
+
+    google.script.run.withSuccessHandler(mapCategories).getCategories();
+</script>
+</body>
+</html>
