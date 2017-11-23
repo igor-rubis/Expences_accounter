@@ -12,6 +12,23 @@ function getCategories() {
 }
 
 function postData(category, amount) {
-  Logger.log(category);
-  Logger.log(amount);
+  var months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ]
+
+  var date = new Date();
+  var year = date.getFullYear();
+  var month = months[date.getMonth()];
+  var day = date.getDate();
 }
