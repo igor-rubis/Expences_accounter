@@ -1,5 +1,5 @@
 function doGet() {
-  return HtmlService.createHtmlOutputFromFile("index");
+  return HtmlService.createHtmlOutputFromFile("files/index");
 }
 
 function getCategories() {
