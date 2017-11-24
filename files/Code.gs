@@ -33,25 +33,18 @@ function postData(category, amount) {
   }
 
   var data = sheet.getDataRange().getValues();
-  Logger.log('data: ' + data);
-  Logger.log('data.length: ' + data.length);
-
-  var monthTableHeight = getCategories().length + 4;
-  Logger.log('monthTableHeight: ' + monthTableHeight);
 
   var anchorCellXOffset = 1;
   var anchorCellYOffset = 1;
 
   if (data.length > 1) {
-    for(var row = 1; row < data.length; row + monthTableHeight) {
+    for(var row = 1; row < data.length; row + getCategories().length + 4) {
       if(data[row][0] == month) {
         anchorCellYOffset = row;
         break;
       }
     }
   }
-  Logger.log('anchorCellXOffset: ' + anchorCellXOffset);
-  Logger.log('anchorCellYOffset: ' + anchorCellYOffset);
 
   if (anchorCellYOffset == 1) {
     if (data.length > 1) {
@@ -59,6 +52,8 @@ function postData(category, amount) {
     }
 
     sheet.getRange(anchorCellXOffset, anchorCellYOffset).setValue(month);
+    sheet.getRange(anchorCellXOffset + 1, anchorCellYOffset + 1).setValue('Total');
+    sheet.getRange(anchorCellXOffset, anchorCellYOffset + getCategories().length + 2).setValue('Total');
 
 
     setAmount(anchorCellXOffset, anchorCellYOffset, category, amount);
