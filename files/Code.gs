@@ -39,7 +39,7 @@ function postData(category, amount) {
   var monthTableHeight = getCategories().length + 4;
   Logger.log('monthTableHeight: ' + monthTableHeight);
 
-  var anchorCellXOffset = 0;
+  var anchorCellXOffset = 1;
   var anchorCellYOffset = 1;
 
   if (data.length > 1) {
