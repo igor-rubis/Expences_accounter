@@ -53,7 +53,7 @@ function postData(category, amount) {
 
     sheet.getRange(anchorCellXOffset, anchorCellYOffset).setValue(month);
     sheet.getRange(anchorCellXOffset + 1, anchorCellYOffset + 1).setValue('Total');
-    sheet.getRange(anchorCellXOffset, anchorCellYOffset + getCategories().length + 2).setValue('Total');
+    sheet.getRange(anchorCellXOffset + getCategories().length + 2, anchorCellYOffset).setValue('Total');
 
 
     setAmount(anchorCellXOffset, anchorCellYOffset, category, amount);
