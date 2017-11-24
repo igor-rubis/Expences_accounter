@@ -1,7 +1,4 @@
-var categories = [
-  'First',
-  'Second' // fill this array with your favourite categories
-];
+var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
 var months = [
   "January",
   "February",
@@ -26,21 +23,19 @@ function doGet() {
 }
 
 function getCategories() {
-  return categories;
+  return spreadsheet.getSheetByName('Categories').getDataRange().getValues();
 }
 
 function postData(category, amount) {
-  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  
   var sheet = spreadsheet.getSheetByName(year);
   if(sheet == null) {
     sheet = spreadsheet.insertSheet(year);
   }
-  
+
   var data = sheet.getDataRange().getValues();
-  
+
   var monthTableHeight = categories.length + 4;
-  
+
   var anchorCellXOffset = 0;
   var anchorCellYOffset = null;
   for(var row = 0; row < data.length; row + monthTableHeight) {
@@ -49,17 +44,13 @@ function postData(category, amount) {
       break;
     }
   }
-  
+
   if(anchorCellYOffset == null) {
     createMonthTable();
     setAmount(anchorCellXOffset, anchorCellYOffset, category, amount);
   } else {
     setAmount(anchorCellXOffset, anchorCellYOffset, category, amount);
   }
-}
-
-function createMonthTable() {
-  
 }
 
 function setAmount(anchorCellXOffset, anchorCellYOffset, category, amount) {
