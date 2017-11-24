@@ -42,7 +42,7 @@ function postData(category, amount) {
   var anchorCellXOffset = 0;
   var anchorCellYOffset = 0;
 
-  if (data.length > 0) {
+  if (data.length > 1) {
     for(var row = 0; row < data.length; row + monthTableHeight) {
       if(data[row][0] == month) {
         anchorCellYOffset = row;
@@ -54,7 +54,7 @@ function postData(category, amount) {
   Logger.log('anchorCellYOffset: ' + anchorCellYOffset);
 
   if (anchorCellYOffset == 0) {
-    if (data.length > 0) {
+    if (data.length > 1) {
       anchorCellYOffset = data.length + 2;
     }
 
