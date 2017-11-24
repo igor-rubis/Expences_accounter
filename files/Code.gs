@@ -34,34 +34,34 @@ function postData(category, amount) {
 
   var data = sheet.getDataRange().getValues();
 
-  var anchorCellXOffset = 1;
-  var anchorCellYOffset = 1;
+  var yOffset = 1;
+  var xOffset = 1;
 
   if (data.length > 1) {
     for(var row = 1; row < data.length; row + getCategories().length + 4) {
       if(data[row][0] == month) {
-        anchorCellYOffset = row;
+        yOffset = row;
         break;
       }
     }
   }
 
-  if (anchorCellYOffset == 1) {
+  if (yOffset == 1) {
     if (data.length > 1) {
-      anchorCellYOffset = data.length + 2;
+      yOffset = data.length + 2;
     }
 
-    sheet.getRange(anchorCellXOffset, anchorCellYOffset).setValue(month);
-    sheet.getRange(anchorCellXOffset + 1, anchorCellYOffset + 1).setValue('Total');
-    sheet.getRange(anchorCellXOffset + getCategories().length + 2, anchorCellYOffset).setValue('Total');
+    sheet.getRange(yOffset, xOffset).setValue(month);
+    sheet.getRange(yOffset + 1, xOffset + 1).setValue('Total');
+    sheet.getRange(yOffset + getCategories().length + 2, xOffset).setValue('Total');
 
 
-    setAmount(anchorCellXOffset, anchorCellYOffset, category, amount);
+    setAmount(yOffset, xOffset, category, amount);
   } else {
-    setAmount(anchorCellXOffset, anchorCellYOffset, category, amount);
+    setAmount(yOffset, xOffset, category, amount);
   }
 }
 
-function setAmount(anchorCellXOffset, anchorCellYOffset, category, amount) {
+function setAmount(yOffset, xOffset, category, amount) {
   
 }
