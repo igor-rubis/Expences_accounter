@@ -33,8 +33,11 @@ function postData(category, amount) {
   }
 
   var data = sheet.getDataRange().getValues();
+  Logger.log('data: ' + data);
+  Logger.log('data.length: ' + data.length);
 
   var monthTableHeight = getCategories().length + 4;
+  Logger.log('monthTableHeight: ' + monthTableHeight);
 
   var anchorCellXOffset = 0;
   var anchorCellYOffset = 0;
@@ -47,6 +50,8 @@ function postData(category, amount) {
       }
     }
   }
+  Logger.log('anchorCellXOffset: ' + anchorCellXOffset);
+  Logger.log('anchorCellYOffset: ' + anchorCellYOffset);
 
   if (anchorCellYOffset == 0) {
     if (data.length > 0) {
