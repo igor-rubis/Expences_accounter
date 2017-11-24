@@ -40,10 +40,10 @@ function postData(category, amount) {
   Logger.log('monthTableHeight: ' + monthTableHeight);
 
   var anchorCellXOffset = 0;
-  var anchorCellYOffset = 0;
+  var anchorCellYOffset = 1;
 
   if (data.length > 1) {
-    for(var row = 0; row < data.length; row + monthTableHeight) {
+    for(var row = 1; row < data.length; row + monthTableHeight) {
       if(data[row][0] == month) {
         anchorCellYOffset = row;
         break;
@@ -53,7 +53,7 @@ function postData(category, amount) {
   Logger.log('anchorCellXOffset: ' + anchorCellXOffset);
   Logger.log('anchorCellYOffset: ' + anchorCellYOffset);
 
-  if (anchorCellYOffset == 0) {
+  if (anchorCellYOffset == 1) {
     if (data.length > 1) {
       anchorCellYOffset = data.length + 2;
     }
