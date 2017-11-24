@@ -34,19 +34,28 @@ function postData(category, amount) {
 
   var data = sheet.getDataRange().getValues();
 
-  var monthTableHeight = categories.length + 4;
+  var monthTableHeight = getCategories().length + 4;
 
   var anchorCellXOffset = 0;
-  var anchorCellYOffset = null;
-  for(var row = 0; row < data.length; row + monthTableHeight) {
-    if(data[row][0] == month) {
-      anchorCellYOffset = row;
-      break;
+  var anchorCellYOffset = 0;
+
+  if (data.length > 0) {
+    for(var row = 0; row < data.length; row + monthTableHeight) {
+      if(data[row][0] == month) {
+        anchorCellYOffset = row;
+        break;
+      }
     }
   }
 
-  if(anchorCellYOffset == null) {
-    createMonthTable();
+  if (anchorCellYOffset == 0) {
+    if (data.length > 0) {
+      anchorCellYOffset = data.length + 2;
+    }
+
+    sheet.getRange(anchorCellXOffset, anchorCellYOffset).setValue(month);
+
+
     setAmount(anchorCellXOffset, anchorCellYOffset, category, amount);
   } else {
     setAmount(anchorCellXOffset, anchorCellYOffset, category, amount);
