@@ -39,16 +39,21 @@ function postData(category, amount) {
     var yOffset = 1;
     var xOffset = 1;
 
+    Logger.log(data.length);
+    var foundMonthTable = false;
+
     if (data.length > 1) {
         for (var row = 1; row < data.length; row + categoriesLength + 4) {
             if (data[row][0] == month) {
                 yOffset = row;
+                foundMonthTable = true;
                 break;
             }
         }
     }
+    Logger.log(yOffset);
 
-    if (yOffset == 1) {
+    if (yOffset == 1 || !foundMonthTable) {
         if (data.length > 1) {
             yOffset = data.length + 2;
         }
@@ -59,7 +64,6 @@ function postData(category, amount) {
         for (var row = 0; row < categoriesLength; row++) {
             sheet.getRange(yOffset + 2 + row, xOffset).setValue(categories[row]);
         }
-
 
         setAmount(yOffset, xOffset, category, amount);
     } else {
