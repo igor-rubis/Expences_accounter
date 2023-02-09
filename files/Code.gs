@@ -24,12 +24,12 @@ function doGet() {
   return HtmlService.createHtmlOutputFromFile('files/index');
 }
 
-function test() {
-  postData('First', 55, 'comment');
+function getCategories() {
+  return spreadsheet.getSheetByName('Categories').getDataRange().getValues();
 }
 
 function postData(category, amount, comment) {
-  categories = spreadsheet.getSheetByName('Categories').getDataRange().getValues();
+  categories = getCategories();
   sheet = spreadsheet.getSheetByName(year);
   if (sheet == null) {
     sheet = spreadsheet.insertSheet(year);
@@ -84,12 +84,27 @@ function postData(category, amount, comment) {
 }
 
 function setAmount(yOffset, xOffset, category, amount, comment) {
-  var categoryIndex;
-  for (var n = 0; n < categories.length; n++) {
-    if (categories[n][0] == category) {
-      categoryIndex = n;
-      break;
+  if (amount != '') {
+    var categoryIndex;
+    for (var n = 0; n < categories.length; n++) {
+      if (categories[n][0] == category) {
+        categoryIndex = n;
+        break;
+      }
+    }
+    var cell = sheet.getRange(yOffset + 1 + categoryIndex, xOffset + 1 + day);
+    if (cell.getValue() != '') {
+      var currentValue  = cell.getFormula() != '' ? cell.getFormula() : cell.getValue();
+      cell.setValue( `=${currentValue}+${amount}`.replace('==', '='));
+    } else {
+      cell.setValue(amount);
+    }
+    if (comment != '') {
+      cell.setComment(`${cell.getComment()}\n* ${comment}`);
     }
   }
-  sheet.getRange(yOffset + 1 + categoryIndex, xOffset + 1 + day).setValue(amount);
+}
+
+function test() {
+  postData('First', 1, 'comment');
 }
