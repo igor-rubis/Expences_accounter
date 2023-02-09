@@ -8,17 +8,21 @@
         display: inline-block;
     }
     </style>
-    
+
 </head>
 <body>
 <div id="form">
     <p>
-        <label for="category">Select category:</label>
+        <label for="category">Category:</label>
         <select id="category"></select>
     </p>
     <p>
-        <label for="amount">Set amount: </label>
+        <label for="amount">Amount: </label>
         <input id="amount" type="text">
+    </p>
+    <p>
+        <label for="comment">Comment: </label>
+        <input id="comment" type="text">
     </p>
     <p>
         <input type="button" onclick="submit()" value="Submit">
@@ -29,11 +33,12 @@
     function submit() {
       var category = document.getElementById('category').value;
       var amount = document.getElementById('amount').value;
-      google.script.run.postData(category, amount);
-      
+      var comment = document.getElementById('comment').value;
+      google.script.run.postData(category, amount, comment);
+
       document.getElementById('amount').value = '';
     }
-    
+
     function mapCategories(categories) {
       categories.forEach(function(item, i, categories) {
         var option = window.document.createElement('option');

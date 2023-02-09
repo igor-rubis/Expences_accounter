@@ -26,7 +26,7 @@ function getCategories() {
     return spreadsheet.getSheetByName('Categories').getDataRange().getValues();
 }
 
-function postData(category, amount) {
+function postData(category, amount, comment) {
     var categories = getCategories();
     var categoriesLength = categories.length;
     var sheet = spreadsheet.getSheetByName(year);
@@ -39,7 +39,6 @@ function postData(category, amount) {
     var yOffset = 1;
     var xOffset = 1;
 
-    Logger.log(data.length);
     var foundMonthTable = false;
 
     if (data.length > 1) {
@@ -51,7 +50,6 @@ function postData(category, amount) {
             }
         }
     }
-    Logger.log(yOffset);
 
     if (yOffset == 1 || !foundMonthTable) {
         if (data.length > 1) {
@@ -65,12 +63,12 @@ function postData(category, amount) {
             sheet.getRange(yOffset + 2 + row, xOffset).setValue(categories[row]);
         }
 
-        setAmount(yOffset, xOffset, category, amount);
+        setAmount(yOffset, xOffset, category, amount, comment);
     } else {
-        setAmount(yOffset, xOffset, category, amount);
+        setAmount(yOffset, xOffset, category, amount, comment);
     }
 }
 
-function setAmount(yOffset, xOffset, category, amount) {
+function setAmount(yOffset, xOffset, category, amount, comment) {
 
 }
