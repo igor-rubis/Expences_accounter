@@ -11,5 +11,5 @@
 * Set: 
   * `Execute as`: `Me`
   * `Who can access`: `Only myself`
-* Deploy the app
+* Deploy the app and authorize
 * Use provided URL

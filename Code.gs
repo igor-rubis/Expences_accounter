@@ -132,5 +132,5 @@ function setAmount(yOffset, xOffset, category, amount, comment) {
 }
 
 function test() {
-  postData('Arrendamento & serviços', '750/40.57', 'Єгору за ТП для мотика');
+  postData('Arrendamento & serviços', '750/40.57', 'comment');
 }
