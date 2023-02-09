@@ -21,7 +21,7 @@ var categories;
 var sheet;
 
 function doGet() {
-  return HtmlService.createHtmlOutputFromFile('files/index');
+  return HtmlService.createHtmlOutputFromFile('index');
 }
 
 function getCategories() {
@@ -119,7 +119,11 @@ function setAmount(yOffset, xOffset, category, amount, comment) {
       var currentValue = cell.getFormula() != '' ? cell.getFormula() : cell.getValue();
       cell.setValue(`=${currentValue}+${amount}`.replace('==', '='));
     } else {
-      cell.setValue(amount);
+      if (amount.includes('+') || amount.includes('-') || amount.includes('/') || amount.includes('*')) {
+        cell.setValue(`=${amount}`);
+      } else {
+        cell.setValue(amount);
+      }
     }
     if (comment != '') {
       cell.setComment(`${cell.getComment()}\n* ${comment}`);
@@ -128,5 +132,5 @@ function setAmount(yOffset, xOffset, category, amount, comment) {
 }
 
 function test() {
-  postData('Arrendamento & serviços', '9,99', 'comment');
+  postData('Arrendamento & serviços', '750/40.57', 'Єгору за ТП для мотика');
 }
