@@ -28,7 +28,7 @@ function getCategories() {
   return spreadsheet.getSheetByName('Categories').getDataRange().getValues();
 }
 
-function postData(category, amount, comment) {
+function postData(date, category, amount, comment) {
   categories = getCategories();
   sheet = spreadsheet.getSheetByName(year);
   if (sheet == null) {

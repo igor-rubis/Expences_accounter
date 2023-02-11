@@ -32,3 +32,4 @@ In some cases it takes time for the script to start working properly: https://su
     * Button width
 * use-case a category is added
 * optimize loops performance
+* optional previous date

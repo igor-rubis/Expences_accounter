@@ -12,6 +12,10 @@
 <body>
 <div id="form">
     <p>
+        <label for="date">Date</label><br>
+        <input id="date" type="date">
+    </p>
+    <p>
         <label for="category">Category</label><br>
         <select id="category"></select>
     </p>
@@ -30,10 +34,12 @@
 
 <script>
   function submit() {
-    var category = document.getElementById('category').value;
-    var amount = document.getElementById('amount').value;
-    var comment = document.getElementById('comment').value;
-    google.script.run.postData(category, amount, comment);
+    google.script.run.postData(
+      document.getElementById('date').value,
+      document.getElementById('category').value,
+      document.getElementById('amount').value,
+      document.getElementById('comment').value
+    );
 
     document.getElementById('amount').value = '';
     document.getElementById('comment').value = '';
