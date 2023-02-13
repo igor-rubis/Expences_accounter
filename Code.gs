@@ -13,10 +13,6 @@ var months = [
   'November',
   'December'
 ];
-var date = new Date();
-var year = date.getFullYear().toString();
-var month = months[date.getMonth()];
-var day = date.getDate();
 var categories;
 var sheet;
 
@@ -29,7 +25,16 @@ function getCategories() {
 }
 
 function postData(date, category, amount, comment) {
+  console.log(`running: postData(date: ${date}, category: ${category}, amount: ${amount}, comment: ${comment})`);
   categories = getCategories();
+  var today = date == '' ? new Date() : new Date(date);
+  var day = today.getDate();
+  console.log(`day: ${day}`);
+  var month = months[today.getMonth()];
+  console.log(`month: ${month}`);
+  var year = today.getFullYear().toString();
+  console.log(`year: ${year}`);
+
   sheet = spreadsheet.getSheetByName(year);
   if (sheet == null) {
     sheet = spreadsheet.insertSheet(year);
@@ -71,8 +76,8 @@ function postData(date, category, amount, comment) {
          .setFontWeight('bold')
          .setValue(month);
     sheet.getRange(yOffset, xOffset + 1).setValue('Total');
-    for (var day = 1; day <= 31; day++) {
-      sheet.getRange(yOffset, xOffset + 1 + day).setValue(day);
+    for (var nDay = 1; nDay <= 31; nDay++) {
+      sheet.getRange(yOffset, xOffset + 1 + nDay).setValue(nDay);
     }
 
     // categories
@@ -91,8 +96,8 @@ function postData(date, category, amount, comment) {
          .setFontWeight('bold')
          .setBackground('#ffd966');
     sheet.getRange(currentYOffcet, xOffset).setValue('Total');
-    for (var day = 0; day <= 31; day++) {
-      sheet.getRange(currentYOffcet, xOffset + 1 + day).setFormulaR1C1(`=SUM(R[-${categories.length}]C[0]:R[-1]C[0])`);
+    for (var nDay = 0; nDay <= 31; nDay++) {
+      sheet.getRange(currentYOffcet, xOffset + 1 + nDay).setFormulaR1C1(`=SUM(R[-${categories.length}]C[0]:R[-1]C[0])`);
     }
 
     // columns width
@@ -101,10 +106,11 @@ function postData(date, category, amount, comment) {
     sheet.setColumnWidths(3, 31, 65);
   }
 
-  setAmount(yOffset, xOffset, category, amount, comment);
+  setAmount(yOffset, xOffset + 1 + day, category, amount, comment);
 }
 
 function setAmount(yOffset, xOffset, category, amount, comment) {
+  console.log(`running: setAmount(yOffset: ${yOffset}, xOffset: ${xOffset}, category: ${category}, amount: ${amount}, comment: ${comment})`);
   if (amount != '') {
     amount = amount.toString().replace(',', '.');
     var categoryIndex;
@@ -114,7 +120,7 @@ function setAmount(yOffset, xOffset, category, amount, comment) {
         break;
       }
     }
-    var cell = sheet.getRange(yOffset + 1 + categoryIndex, xOffset + 1 + day);
+    var cell = sheet.getRange(yOffset + 1 + categoryIndex, xOffset);
     if (cell.getValue() != '') {
       var currentValue = cell.getFormula() != '' ? cell.getFormula() : cell.getValue();
       cell.setValue(`=${currentValue}+${amount}`.replace('==', '='));
@@ -132,5 +138,5 @@ function setAmount(yOffset, xOffset, category, amount, comment) {
 }
 
 function test() {
-  postData('Arrendamento & serviços', '750/40.57', 'comment');
+  postData('1.02.2023', 'First', '10', '');
 }
