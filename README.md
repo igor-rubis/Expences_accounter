@@ -25,11 +25,12 @@ In some cases it takes time for the script to start working properly: https://su
 
 ### TODO
 
+* optional previous date
+* add income
+* use-case: a category is added
 * layout for mobile version
     * comment: text area
     * amount: numbers
     * inputs width and align
     * Button width
-* use-case a category is added
 * optimize loops performance
-* optional previous date

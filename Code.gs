@@ -106,7 +106,7 @@ function postData(date, category, amount, comment) {
 
 function setAmount(yOffset, xOffset, category, amount, comment) {
   if (amount != '') {
-    amount = amount.replace(',', '.');
+    amount = amount.toString().replace(',', '.');
     var categoryIndex;
     for (var n = 0; n < categories.length; n++) {
       if (categories[n][0] == category) {
