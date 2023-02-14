@@ -4,32 +4,58 @@
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <style>
         label {
-            width: 150px;
             display: inline-block;
+            float: left;
+        }
+
+        #form {
+            width: 160px;
+            position: relative;
+            margin: 0 auto;
+            clear: left;
+            height: auto;
+            z-index: 0;
+            text-align: center;
+            transform-origin: 50% 0%;
+            -ms-transform: scale(2.5);
+            -webkit-transform: scale(2.5);
+            transform: scale(2.5);
+        }
+
+        input, select {
+            width: 160px;
+            box-sizing: border-box;
+        }
+
+        [type="button"] {
+            height: 50px;
+        }
+
+        @media only screen and (max-width: 1080px) {
+            #form {
+                transform-origin: 50% 0%;
+                -ms-transform: scale(5);
+                -webkit-transform: scale(5);
+                transform: scale(5);
+            }
         }
     </style>
 </head>
 <body>
 <div id="form">
-    <p>
-        <label for="date">Date</label><br>
-        <input id="date" type="date">
-    </p>
-    <p>
-        <label for="category">Category</label><br>
-        <select id="category"></select>
-    </p>
-    <p>
-        <label for="amount">Amount</label><br>
-        <input id="amount" type="number">
-    </p>
-    <p>
-        <label for="comment">Comment</label><br>
-        <input id="comment" type="text">
-    </p>
-    <p>
-        <input type="button" onclick="submit()" value="Submit">
-    </p>
+    <label for="date">Date</label><br>
+    <input id="date" type="date"><br><br>
+
+    <label for="category">Category</label><br>
+    <select id="category"></select><br><br>
+
+    <label for="amount">Amount</label><br>
+    <input id="amount" type="number"><br><br>
+
+    <label for="comment">Comment</label><br>
+    <input id="comment" type="text"><br><br>
+
+    <input type="button" onclick="submit()" value="Submit">
 </div>
 
 <script>
