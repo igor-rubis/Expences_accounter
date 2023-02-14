@@ -25,7 +25,6 @@ In some cases it takes time for the script to start working properly: https://su
 
 ### TODO
 
-* add income
 * use-case: a category is added
 * layout for mobile version
     * comment: text area

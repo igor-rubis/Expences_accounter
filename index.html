@@ -47,6 +47,7 @@
   }
 
   function mapCategories(categories) {
+    categories.push('Income');
     categories.forEach(function (item, i, categories) {
       var option = window.document.createElement('option');
       option.text = item;

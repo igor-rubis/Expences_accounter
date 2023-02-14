@@ -64,11 +64,15 @@ function postData(date, category, amount, comment) {
     }
 
     // font & format
-    sheet.getRange(yOffset, xOffset, categories.length + 2, 33)
+    sheet.getRange(yOffset, xOffset, categories.length + 3, 33)
          .setFontSize(10)
          .setFontFamily('Ubuntu')
          .setBorder(true, true, true, true, true, true, 'black', SpreadsheetApp.BorderStyle.SOLID);
-    sheet.getRange(yOffset + 1, xOffset + 1, categories.length + 1, 32).setNumberFormat('#,##0.00');
+    sheet.getRange(yOffset + categories.length + 3, xOffset, 1, 2)
+         .setFontSize(10)
+         .setFontFamily('Ubuntu')
+         .setBorder(true, true, true, true, true, true, 'black', SpreadsheetApp.BorderStyle.SOLID);
+    sheet.getRange(yOffset + 1, xOffset + 1, categories.length + 3, 32).setNumberFormat('#,##0.00');
 
     // header
     sheet.getRange(yOffset, xOffset, 1, 33).setBackground('#a8d1a8');
@@ -99,6 +103,18 @@ function postData(date, category, amount, comment) {
     for (var nDay = 0; nDay <= 31; nDay++) {
       sheet.getRange(currentYOffcet, xOffset + 1 + nDay).setFormulaR1C1(`=SUM(R[-${categories.length}]C[0]:R[-1]C[0])`);
     }
+
+    // Income
+    currentYOffcet += 1;
+    sheet.getRange(currentYOffcet, xOffset, 1, 33).setBackground('#d5a6bd');
+    sheet.getRange(currentYOffcet, xOffset).setValue('Income');
+    sheet.getRange(currentYOffcet, xOffset + 1).setFormulaR1C1('=SUM(R[0]C[1]:R[0]C[31])');
+
+    // Margin
+    currentYOffcet += 1;
+    sheet.getRange(currentYOffcet, xOffset, 1, 2).setBackground('#ff9900');
+    sheet.getRange(currentYOffcet, xOffset).setValue('Margin');
+    sheet.getRange(currentYOffcet, xOffset + 1).setFormulaR1C1('=R[-1]C[0]-R[-2]C[0]');
 
     // columns width
     sheet.setColumnWidth(1, 230);
