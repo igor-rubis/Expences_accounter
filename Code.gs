@@ -163,5 +163,5 @@ function setAmount(yOffset, xOffset, category, amount, comment) {
 }
 
 function test() {
-  postData('1.02.2023', 'First', '10', '');
+  postData('2023-02-13', 'Income', '111', '');
 }
