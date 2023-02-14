@@ -106,13 +106,17 @@ function postData(date, category, amount, comment) {
 
     // Income
     currentYOffcet += 1;
-    sheet.getRange(currentYOffcet, xOffset, 1, 33).setBackground('#d5a6bd');
+    sheet.getRange(currentYOffcet, xOffset, 1, 33)
+         .setFontWeight('bold')
+         .setBackground('#d5a6bd');
     sheet.getRange(currentYOffcet, xOffset).setValue('Income');
     sheet.getRange(currentYOffcet, xOffset + 1).setFormulaR1C1('=SUM(R[0]C[1]:R[0]C[31])');
 
     // Margin
     currentYOffcet += 1;
-    sheet.getRange(currentYOffcet, xOffset, 1, 2).setBackground('#ff9900');
+    sheet.getRange(currentYOffcet, xOffset, 1, 2)
+         .setFontWeight('bold')
+         .setBackground('#ff9900');
     sheet.getRange(currentYOffcet, xOffset).setValue('Margin');
     sheet.getRange(currentYOffcet, xOffset + 1).setFormulaR1C1('=R[-1]C[0]-R[-2]C[0]');
 
@@ -130,12 +134,17 @@ function setAmount(yOffset, xOffset, category, amount, comment) {
   if (amount != '') {
     amount = amount.toString().replace(',', '.');
     var categoryIndex;
-    for (var n = 0; n < categories.length; n++) {
-      if (categories[n][0] == category) {
-        categoryIndex = n;
-        break;
+    if (category == 'Income') {
+      categoryIndex = categories.length + 1;
+    } else {
+      for (var n = 0; n < categories.length; n++) {
+        if (categories[n][0] == category) {
+          categoryIndex = n;
+          break;
+        }
       }
     }
+    console.log(`getting row to set amount: yOffset: ${yOffset + 1 + categoryIndex}, xOffset: ${xOffset}`);
     var cell = sheet.getRange(yOffset + 1 + categoryIndex, xOffset);
     if (cell.getValue() != '') {
       var currentValue = cell.getFormula() != '' ? cell.getFormula() : cell.getValue();
