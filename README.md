@@ -25,12 +25,5 @@ In some cases it takes time for the script to start working properly: https://su
 
 ### TODO
 
-* Amount input allows formulas
-* use-case: a category is added
-* layout for mobile version
-    * comment: text area
-    * amount: numbers
-    * inputs width and align
-    * Button width
 * optimize loops performance
 * At the end of the year count spending and income totals and average spending
