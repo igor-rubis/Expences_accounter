@@ -80,19 +80,18 @@ function postData(date, category, amount, comment) {
          .setFontWeight('bold')
          .setValue(month);
     sheet.getRange(yOffset, xOffset + 1).setValue('Total');
-    for (var nDay = 1; nDay <= 31; nDay++) {
-      sheet.getRange(yOffset, xOffset + 1 + nDay).setValue(nDay);
-    }
+    sheet.getRange(yOffset, xOffset + 2, 1, 31).setValues([[...new Array(31)].map((_, i) => i + 1)]);
 
     // categories
-    for (var row = 0; row < categories.length; row++) {
-      var currentYOffcet = yOffset + 1 + row;
-      if (row % 2 != 0) {
-        sheet.getRange(currentYOffcet, xOffset, 1, 33).setBackground('#dddada');
-      }
-      sheet.getRange(currentYOffcet, xOffset).setValue(categories[row]);
-      sheet.getRange(currentYOffcet, xOffset + 1).setFormulaR1C1('=SUM(R[0]C[1]:R[0]C[31])');
-    }
+    sheet.getRange(yOffset + 1, xOffset, categories.length, 33).setBackgrounds(
+      [...new Array(categories.length)].map((_, i) => i % 2 != 0 ? [...new Array(33)].map(() => '#dddada') : [...new Array(33)].map(() => '#ffffff'))
+    );
+    sheet.getRange(yOffset + 1, xOffset, categories.length, 1).setValues(
+      [...new Array(categories.length)].map((_, i) => [categories[i]])
+    );
+    sheet.getRange(yOffset + 1, xOffset + 1, categories.length, 1).setFormulasR1C1(
+      [...new Array(categories.length)].map(() => ['=SUM(R[0]C[1]:R[0]C[31])'])
+    );
 
     // footer
     var currentYOffcet = yOffset + categories.length + 1;
@@ -100,9 +99,7 @@ function postData(date, category, amount, comment) {
          .setFontWeight('bold')
          .setBackground('#ffd966');
     sheet.getRange(currentYOffcet, xOffset).setValue('Total');
-    for (var nDay = 0; nDay <= 31; nDay++) {
-      sheet.getRange(currentYOffcet, xOffset + 1 + nDay).setFormulaR1C1(`=SUM(R[-${categories.length}]C[0]:R[-1]C[0])`);
-    }
+    sheet.getRange(currentYOffcet, xOffset + 1, 1, 32).setFormulasR1C1([[...new Array(32)].map(() => `=SUM(R[-${categories.length}]C[0]:R[-1]C[0])`)]);
 
     // Income
     currentYOffcet += 1;
@@ -129,32 +126,27 @@ function postData(date, category, amount, comment) {
   setAmount(yOffset, xOffset + 1 + day, category, amount, comment);
 }
 
+function getCategoryIndex(category) {
+  for (var n = 0; n < categories.length; n++) {
+    if (categories[n][0] == category) {
+      return n;
+    }
+  }
+}
+
 function setAmount(yOffset, xOffset, category, amount, comment) {
   console.log(`running: setAmount(yOffset: ${yOffset}, xOffset: ${xOffset}, category: ${category}, amount: ${amount}, comment: ${comment})`);
   if (amount != '') {
     amount = amount.toString().replace(',', '.');
-    var categoryIndex;
-    if (category == 'Income') {
-      categoryIndex = categories.length + 1;
-    } else {
-      for (var n = 0; n < categories.length; n++) {
-        if (categories[n][0] == category) {
-          categoryIndex = n;
-          break;
-        }
-      }
-    }
+    var categoryIndex = category == 'Income' ? categories.length + 1 : getCategoryIndex(category);
+
     console.log(`getting row to set amount: yOffset: ${yOffset + 1 + categoryIndex}, xOffset: ${xOffset}`);
     var cell = sheet.getRange(yOffset + 1 + categoryIndex, xOffset);
     if (cell.getValue() != '') {
       var currentValue = cell.getFormula() != '' ? cell.getFormula() : cell.getValue();
       cell.setValue(`=${currentValue}+${amount}`.replace('==', '='));
     } else {
-      if (amount.includes('+') || amount.includes('-') || amount.includes('/') || amount.includes('*')) {
-        cell.setValue(`=${amount}`);
-      } else {
-        cell.setValue(amount);
-      }
+      cell.setValue((amount.includes('+') || amount.includes('-') || amount.includes('/') || amount.includes('*')) ? `=${amount}` : amount);
     }
     if (comment != '') {
       cell.setComment(`${cell.getComment()}\n* ${comment}`);
