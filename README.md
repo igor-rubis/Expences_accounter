@@ -25,5 +25,10 @@ In some cases it takes time for the script to start working properly: https://su
 
 ### TODO
 
-* optimize loops performance
 * At the end of the year count spending and income totals and average spending
+* Use case 'a category is added':
+  * insert row with new category
+  * add `total` formula for this row
+  * assure all other formulas consider new row
+  * redraw backgrounds for categories rows
+* Use case a category is removed
