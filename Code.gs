@@ -149,7 +149,7 @@ function setAmount(yOffset, xOffset, category, amount, comment) {
       cell.setValue((amount.includes('+') || amount.includes('-') || amount.includes('/') || amount.includes('*')) ? `=${amount}` : amount);
     }
     if (comment != '') {
-      cell.setComment(`${cell.getComment()}\n* ${comment}`);
+      cell.setComment(`${cell.getComment()}\n* ${amount}: ${comment}`);
     }
   }
 }
