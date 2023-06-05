@@ -149,11 +149,11 @@ function setAmount(yOffset, xOffset, category, amount, comment) {
       cell.setValue((amount.includes('+') || amount.includes('-') || amount.includes('/') || amount.includes('*')) ? `=${amount}` : amount);
     }
     if (comment != '') {
-      cell.setComment(`${cell.getComment()}\n* ${amount}: ${comment}`);
+      cell.setComment(`${cell.getComment()}\n* ${amount}: ${comment}`.trim());
     }
   }
 }
 
 function test() {
-  postData('2023-02-13', 'Income', '111', '');
+  postData('2023-06-13', 'Податки + комісії', '111', 'bbb');
 }
