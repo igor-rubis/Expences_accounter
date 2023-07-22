@@ -17,17 +17,17 @@
   ![](screenshots/img_7.png) ![](screenshots/img_8.png) ![](screenshots/img_9.png) ![](screenshots/img_10.png)
 * Use provided URL ![](screenshots/img_11.png)
 * Confirm access of this project to your google drive:
-![img.png](screenshots/img_12.png)
-![img.png](screenshots/img_13.png)
-![img.png](screenshots/img_14.png)
+  ![img.png](screenshots/img_12.png)
+  ![img.png](screenshots/img_13.png)
+  ![img.png](screenshots/img_14.png)
 
 In some cases it takes time for the script to start working properly: https://support.google.com/docs/thread/99474963
 
 ### TODO
 
-* Use case 'a category is added':
-  * insert row with new category
-  * add `total` formula for this row
-  * assure all other formulas consider new row
-  * redraw backgrounds for categories rows
-* Use case a category is removed
+* predefined comments for different categories
+* currencies
+    * https://api.monobank.ua/bank/currency
+        * EUR: 978
+        * USD: 840
+        * UAH: 980
