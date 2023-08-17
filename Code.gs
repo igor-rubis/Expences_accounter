@@ -56,26 +56,28 @@ function postData(date, category, amount, comment) {
   console.log('create `Average` table');
   if (sheet.getDataRange().getValues().length <= 1) {
     // font & format
-    sheet.getRange(yOffset, xOffset, categories.length + 3, 2)
+    sheet.getRange(yOffset, xOffset, categories.length + 3, 3)
          .setFontSize(10)
          .setFontFamily('Ubuntu')
          .setBorder(true, true, true, true, true, true, 'black', SpreadsheetApp.BorderStyle.SOLID);
-    sheet.getRange(yOffset + categories.length + 3, xOffset, 1, 2)
+    sheet.getRange(yOffset + categories.length + 3, xOffset, 1, 3)
          .setFontSize(10)
          .setFontFamily('Ubuntu')
          .setBorder(true, true, true, true, true, true, 'black', SpreadsheetApp.BorderStyle.SOLID);
-    sheet.getRange(yOffset + 1, xOffset + 1, categories.length + 3, 1).setNumberFormat('#,##0.00');
+    sheet.getRange(yOffset + 1, xOffset + 1, categories.length + 3, 2).setNumberFormat('#,##0.00');
 
     // header
-    sheet.getRange(yOffset, xOffset, 1, 2).setBackground('#a8d1a8');
-    sheet.getRange(yOffset, xOffset)
+    sheet.getRange(yOffset, xOffset, 1, 3).setBackground('#a8d1a8');
+    sheet.getRange(yOffset, xOffset + 1)
          .setFontWeight('bold')
          .setValue('Average');
-    sheet.getRange(yOffset, xOffset, 1, 2).mergeAcross();
+    sheet.getRange(yOffset, xOffset + 2)
+         .setFontWeight('bold')
+         .setValue('Totals');
 
     // categories
-    sheet.getRange(yOffset + 1, xOffset, categories.length, 2).setBackgrounds(
-      [...new Array(categories.length)].map((_, i) => i % 2 != 0 ? [...new Array(2)].map(() => '#dddada') : [...new Array(2)].map(() => '#ffffff'))
+    sheet.getRange(yOffset + 1, xOffset, categories.length, 3).setBackgrounds(
+      [...new Array(categories.length)].map((_, i) => i % 2 != 0 ? [...new Array(3)].map(() => '#dddada') : [...new Array(3)].map(() => '#ffffff'))
     );
     sheet.getRange(yOffset + 1, xOffset, categories.length, 1).setValues(
       [...new Array(categories.length)].map((_, i) => [categories[i]])
@@ -83,26 +85,26 @@ function postData(date, category, amount, comment) {
 
     // Total
     var currentYOffcet = yOffset + categories.length + 1;
-    sheet.getRange(currentYOffcet, xOffset, 1, 2)
+    sheet.getRange(currentYOffcet, xOffset, 1, 3)
          .setFontWeight('bold')
          .setBackground('#ffd966');
     sheet.getRange(currentYOffcet, xOffset).setValue('Total');
-    sheet.getRange(currentYOffcet, xOffset + 1).setFormulasR1C1([[...new Array(1)].map(() => `=SUM(R[-${categories.length}]C[0]:R[-1]C[0])`)]);
+    sheet.getRange(currentYOffcet, xOffset + 1, 1, 2).setFormulasR1C1([[...new Array(2)].map(() => `=SUM(R[-${categories.length}]C[0]:R[-1]C[0])`)]);
 
     // Income
     currentYOffcet += 1;
-    sheet.getRange(currentYOffcet, xOffset, 1, 2)
+    sheet.getRange(currentYOffcet, xOffset, 1, 3)
          .setFontWeight('bold')
          .setBackground('#d5a6bd');
     sheet.getRange(currentYOffcet, xOffset).setValue('Income');
 
     // Margin
     currentYOffcet += 1;
-    sheet.getRange(currentYOffcet, xOffset, 1, 2)
+    sheet.getRange(currentYOffcet, xOffset, 1, 3)
          .setFontWeight('bold')
          .setBackground('#ff9900');
     sheet.getRange(currentYOffcet, xOffset).setValue('Margin');
-    sheet.getRange(currentYOffcet, xOffset + 1).setFormulaR1C1('=R[-1]C[0]-R[-2]C[0]');
+    sheet.getRange(currentYOffcet, xOffset + 1, 1, 2).setFormulasR1C1([[...new Array(2)].map(() => '=R[-1]C[0]-R[-2]C[0]')]);
   }
 
   var foundMonthTable = false;
@@ -210,9 +212,12 @@ function setAverages() {
       }
     }
     if (currentCategory == 'Income') currentYOffset++;
-    var cell = sheet.getRange(currentYOffset + row, 2);
-    cell.clearContent();
-    cell.setFormulaR1C1(`=(R[${indexes.join(']C[0]+R[')}]C[0])/${new Date().getMonth() + 1}`);
+    var averagesCell = sheet.getRange(currentYOffset + row, 2);
+    averagesCell.clearContent();
+    averagesCell.setFormulaR1C1(`=(R[${indexes.join(']C[0]+R[')}]C[0])/${new Date().getMonth() + 1}`);
+    var totalsCell = sheet.getRange(currentYOffset + row, 3);
+    totalsCell.clearContent();
+    totalsCell.setFormulaR1C1(`=(R[${indexes.join(']C[-1]+R[')}]C[-1])`);
   }
 }
 
