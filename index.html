@@ -59,6 +59,8 @@
     <input id="amount" type="number"><br>
     <select id="currency">
         <option value="EUR">EUR</option>
+        <option value="USD">USD</option>
+        <option value="UAH">UAH</option>
     </select><br><br>
 
     <label for="comment">Comment</label><br>
@@ -103,20 +105,7 @@
     });
   }
 
-  function mapCurrencies(currencies) {
-    // let subCategories;
-    currencies = currencies.map(function (arr) {return arr[0];});
-    currencies.forEach(function (item, i, categories) {
-      if (item != '') {
-        let option = window.document.createElement('option');
-        option.text = item;
-        document.getElementById('currency').appendChild(option);
-      }
-    });
-  }
-
   google.script.run.withSuccessHandler(mapCategories).getCategories();
-  google.script.run.withSuccessHandler(mapCurrencies).getCurrencies();
 </script>
 </body>
 </html>

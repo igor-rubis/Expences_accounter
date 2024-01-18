@@ -31,6 +31,7 @@ function getCurrencies() {
   let name = 'Currencies';
   let categoriesSheet = spreadsheet.getSheetByName(name);
   if (categoriesSheet == null) {
+    console.log(`Creating ${name} sheet`)
     categoriesSheet = spreadsheet.insertSheet(name);
     categoriesSheet.getRange('A2').setValue('USD');
     categoriesSheet.getRange('A3').setValue('UAH');
@@ -38,8 +39,13 @@ function getCurrencies() {
   let dateCell = categoriesSheet.getRange('B1');
   let usdRateCell = categoriesSheet.getRange('B2');
   let uahRateCell = categoriesSheet.getRange('B3');
-  if (dateCell.getValue() != Utilities.formatDate(new Date(), 'GMT+2', 'dd/MM/yyyy') || usdRateCell.getValue() == '' || uahRateCell.getValue() == '') {
+  if (
+    Utilities.formatDate(dateCell.getValue(), 'GMT+2', 'dd/MM/yyyy') != Utilities.formatDate(new Date(), 'GMT+2', 'dd/MM/yyyy')
+    || usdRateCell.getValue() == ''
+    || uahRateCell.getValue() == ''
+  ) {
     dateCell.setValue(Utilities.formatDate(new Date(), 'GMT+2', 'dd/MM/yyyy'));
+    console.log('connecting to monobank api')
     const currencyIdEur = 978;
     const currencyIdUsd = 840;
     const currencyIdUah = 980;
@@ -53,10 +59,12 @@ function getCurrencies() {
       let rate = rates[i];
       if (rate.currencyCodeA == currencyIdEur) {
         if (rate.currencyCodeB == currencyIdUsd) {
+          console.log(`USD rate: ${rate.rateSell}`)
           usdRateCell.setValue(rate.rateSell);
           rateUsdSet = true;
         }
         if (rate.currencyCodeB == currencyIdUah) {
+          console.log(`UAH rate: ${rate.rateSell}`)
           uahRateCell.setValue(rate.rateSell);
           rateUahSet = true;
         }
@@ -285,6 +293,7 @@ function setAmount(yOffset, xOffset, category, amount, currency, comment) {
     amount = amount.toString().replace(',', '.');
     let amountComment = `${amount} ${currency}`;
     if (currency != 'EUR') {
+      console.log(`getting today's currency rate for: ${currency}`);
       let currencies = new Map();
       let currenciesData = getCurrencies();
       for (var i = 0; i < currenciesData.length; i++) {
