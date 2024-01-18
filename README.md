@@ -26,8 +26,3 @@ In some cases it takes time for the script to start working properly: https://su
 ### TODO
 
 * predefined comments for different categories
-* currencies
-    * https://api.monobank.ua/bank/currency
-        * EUR: 978
-        * USD: 840
-        * UAH: 980

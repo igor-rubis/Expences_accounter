@@ -1,6 +1,8 @@
 function test() {
-  postData('2023-07-13', 'Arrendamento & serviços', '111', 'bbb');
-  postData('2023-07-14', 'Income', '111', 'bbb');
+  // setAmount(15, 15, 'Arrendamento & serviços', 100, "comment")
+  postData('2024-01-01', 'Arrendamento & serviços', '111', 'UAH', 'comment');
+  // postData('2023-07-14', 'Income', '111', 'bbb');
+  console.log();
 }
 
 var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
@@ -18,20 +20,70 @@ var months = [
   'November',
   'December'
 ];
-var categories;
-var sheet;
+let categories;
+let sheet;
 
 function doGet() {
   return HtmlService.createHtmlOutputFromFile('index');
 }
 
-function getCategories() {
-  return spreadsheet.getSheetByName('Categories').getDataRange().getValues();
+function getCurrencies() {
+  let name = 'Currencies';
+  let categoriesSheet = spreadsheet.getSheetByName(name);
+  if (categoriesSheet == null) {
+    categoriesSheet = spreadsheet.insertSheet(name);
+    categoriesSheet.getRange('A2').setValue('USD');
+    categoriesSheet.getRange('A3').setValue('UAH');
+  }
+  let dateCell = categoriesSheet.getRange('B1');
+  let usdRateCell = categoriesSheet.getRange('B2');
+  let uahRateCell = categoriesSheet.getRange('B3');
+  if (dateCell.getValue() != Utilities.formatDate(new Date(), 'GMT+2', 'dd/MM/yyyy') || usdRateCell.getValue() == '' || uahRateCell.getValue() == '') {
+    dateCell.setValue(Utilities.formatDate(new Date(), 'GMT+2', 'dd/MM/yyyy'));
+    const currencyIdEur = 978;
+    const currencyIdUsd = 840;
+    const currencyIdUah = 980;
+    let rates = JSON.parse(UrlFetchApp.fetch('https://api.monobank.ua/bank/currency').getContentText());
+    let rateUsdSet = false;
+    let rateUahSet = false;
+    for (let i = 0; i < rates.length; i++) {
+      if (rateUsdSet && rateUahSet) {
+        break;
+      }
+      let rate = rates[i];
+      if (rate.currencyCodeA == currencyIdEur) {
+        if (rate.currencyCodeB == currencyIdUsd) {
+          usdRateCell.setValue(rate.rateSell);
+          rateUsdSet = true;
+        }
+        if (rate.currencyCodeB == currencyIdUah) {
+          uahRateCell.setValue(rate.rateSell);
+          rateUahSet = true;
+        }
+      }
+    }
+  }
+  return categoriesSheet.getDataRange().getValues();
 }
 
-function postData(date, category, amount, comment) {
-  console.log(`running: postData(date: ${date}, category: ${category}, amount: ${amount}, comment: ${comment})`);
-  categories = getCategories();
+function getCategories() {
+  let name = 'Categories';
+  let categoriesSheet = spreadsheet.getSheetByName(name);
+  if (categoriesSheet == null) {
+    categoriesSheet = spreadsheet.insertSheet(name);
+  }
+  return categoriesSheet.getDataRange().getValues();
+}
+
+// function postData(date, category, amount, currency, comment, subcategory) {
+function postData(date, category, amount, currency, comment) {
+  console.log(`running: postData`);
+  console.log(`date: ${date}`);
+  console.log(`category: ${category}`);
+  console.log(`amount: ${amount}`);
+  console.log(` currency: ${currency}`);
+  console.log(` comment: ${comment}`);
+  categories = getCategories().map(function (arr) {return arr[0];});
   var today = date == '' ? new Date() : new Date(date);
   var day = today.getDate();
   console.log(`day: ${day}`);
@@ -178,7 +230,7 @@ function postData(date, category, amount, comment) {
     setAverages();
   }
 
-  setAmount(yOffset, xOffset + 1 + day, category, amount, comment);
+  setAmount(yOffset, xOffset + 1 + day, category, amount, currency, comment);
 }
 
 function setAverages() {
@@ -217,30 +269,39 @@ function setAverages() {
     averagesCell.setFormulaR1C1(`=(R[${indexes.join(']C[0]+R[')}]C[0])/${new Date().getMonth() + 1}`);
     var totalsCell = sheet.getRange(currentYOffset + row, 3);
     totalsCell.clearContent();
-    totalsCell.setFormulaR1C1(`=(R[${indexes.join(']C[-1]+R[')}]C[-1])`);
+    totalsCell.setFormulaR1C1(`=R[${indexes.join(']C[-1]+R[')}]C[-1]`);
   }
 }
 
 function getCategoryIndex(category) {
   for (var n = 0; n < categories.length; n++) {
-    if (categories[n][0] == category) return n;
+    if (categories[n] == category) return n;
   }
 }
 
-function setAmount(yOffset, xOffset, category, amount, comment) {
+function setAmount(yOffset, xOffset, category, amount, currency, comment) {
   console.log(`running: setAmount(yOffset: ${yOffset}, xOffset: ${xOffset}, category: ${category}, amount: ${amount}, comment: ${comment})`);
   if (amount != '') {
     amount = amount.toString().replace(',', '.');
-    var categoryIndex = category == 'Income' ? categories.length + 1 : getCategoryIndex(category);
-
+    let amountComment = `${amount} ${currency}`;
+    if (currency != 'EUR') {
+      let currencies = new Map();
+      let currenciesData = getCurrencies();
+      for (var i = 0; i < currenciesData.length; i++) {
+        currencies.set(currenciesData[i][0], currenciesData[i][1]);
+      }
+      amount = `${amount}/${currencies.get(currency)}`;
+      amountComment += ` (${eval(amount).toFixed(2)} EUR)`;
+    }
+    let categoryIndex = category == 'Income' ? categories.length + 1 : getCategoryIndex(category);
     console.log(`getting row to set amount: yOffset: ${yOffset + 1 + categoryIndex}, xOffset: ${xOffset}`);
-    var cell = sheet.getRange(yOffset + 1 + categoryIndex, xOffset);
+    let cell = sheet.getRange(yOffset + 1 + categoryIndex, xOffset);
     if (cell.getValue() != '') {
-      var currentValue = cell.getFormula() != '' ? cell.getFormula() : cell.getValue();
+      let currentValue = cell.getFormula() != '' ? cell.getFormula() : cell.getValue();
       cell.setValue(`=${currentValue}+${amount}`.replace('==', '='));
     } else {
       cell.setValue((amount.includes('+') || amount.includes('-') || amount.includes('/') || amount.includes('*')) ? `=${amount}` : amount);
     }
-    if (comment != '') cell.setComment(`${cell.getComment()}\n* ${amount}: ${comment}`.trim());
+    cell.setComment(`${cell.getComment()}\n* ${amountComment}: ${comment}`.trim());
   }
 }
