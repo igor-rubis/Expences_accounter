@@ -32,6 +32,10 @@
             font-family: 'Ubuntu';
         }
 
+        .hidden {
+            display: none;
+        }
+
         [type="button"] {
             height: 50px;
             font-size: 20px;
@@ -53,7 +57,10 @@
     <input id="date" type="date"><br><br>
 
     <label for="category">Category</label><br>
-    <select id="category"></select><br><br>
+    <select
+            id="category"
+            onChange="revealSubCategories(); document.getElementById('subCategory').value='- - -';"
+    ></select><br><br>
 
     <label for="amount">Amount</label><br>
     <input id="amount" type="number"><br>
@@ -65,9 +72,9 @@
 
     <label for="comment">Comment</label><br>
     <input id="comment" type="text"><br>
-    <!--    <select id="subCategory">-->
-    <!--        <option value="empty">- - -</option>-->
-    <!--    </select><br>-->
+    <select id="subCategory">
+        <option id="empty" value="- - -">- - -</option>
+    </select><br>
     <br>
 
     <input type="button" onclick="submit()" value="Submit">
@@ -81,7 +88,7 @@
       document.getElementById('amount').value,
       document.getElementById('currency').value,
       document.getElementById('comment').value,
-      // document.getElementById('subCategory').value
+      document.getElementById('subCategory').value
     );
 
     document.getElementById('amount').value = '';
@@ -89,20 +96,53 @@
     document.getElementById('date').value = '';
   }
 
-  function clearSubCategories() {
-    // document.getElementById('subCategory').remove();
-    document.getElementById('subCategory').style.display = 'none';
+  function revealSubCategories() {
+    let subCategorySelect = document.getElementById('subCategory')
+    subCategorySelect.classList.add('hidden');
+    subCategorySelect.classList.remove('hidden');
+    let subCategories = document.querySelectorAll('#subCategory option');
+    for (let i = 0; i < subCategories.length; i++) {
+      subCategories[i].classList.add('hidden');
+    }
+    document.getElementById('empty').classList.remove('hidden');
+    let categoryId = document
+      .querySelectorAll(`#category option[value='${document.getElementById('category').value}']`).item(0)
+      .className
+      .replaceAll('category_', '');
+    subCategories = document.querySelectorAll(`option[class^='${categoryId}_']`);
+    for (let i = 0; i < subCategories.length; i++) {
+      subCategories[i].classList.remove('hidden');
+    }
   }
 
-  function mapCategories(categories) {
-    // let subCategories;
-    categories = categories.map(function (arr) {return arr[0];});
-    categories.push('Income');
-    categories.forEach(function (item, i, categories) {
-      let option = window.document.createElement('option');
-      option.text = item;
-      document.getElementById('category').appendChild(option);
-    });
+  function addOption(selectId, id, className, text, visible) {
+    console.log(`addOption(${selectId}, ${id}, ${className}, ${text})`);
+    let option = window.document.createElement('option');
+    option.text = text;
+    option.value = text;
+    option.classList.add(`${id}_${className}`);
+    if (!visible) option.classList.add('hidden');
+    document.getElementById(selectId).appendChild(option);
+  }
+
+  function mapCategories(categoriesData) {
+    for (let i = 0; i <= categoriesData.length; i++) {
+      console.log(`current category data: ${categoriesData[i]}`);
+      let category;
+      if (i === categoriesData.length) {
+        category = 'Income';
+        addOption('subCategory', i, 0, 'Salario', false);
+      } else {
+        category = categoriesData[i][0];
+        for (let ii = 1; ii < categoriesData[i].length; ii++) {
+          if (categoriesData[i][ii] !== '') {
+            addOption('subCategory', i, ii, categoriesData[i][ii], false);
+          }
+        }
+      }
+      addOption('category', 'category', i, category, true);
+    }
+    revealSubCategories();
   }
 
   google.script.run.withSuccessHandler(mapCategories).getCategories();

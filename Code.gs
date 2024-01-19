@@ -1,6 +1,6 @@
 function test() {
   // setAmount(15, 15, 'Arrendamento & serviços', 100, "comment")
-  postData('2024-01-01', 'Arrendamento & serviços', '111', 'UAH', 'comment');
+  postData('2024-01-19', 'Arrendamento & serviços', '111', 'UAH', 'comment', '- - -');
   // postData('2023-07-14', 'Income', '111', 'bbb');
   console.log();
 }
@@ -40,7 +40,7 @@ function getCurrencies() {
   let usdRateCell = categoriesSheet.getRange('B2');
   let uahRateCell = categoriesSheet.getRange('B3');
   if (
-    Utilities.formatDate(dateCell.getValue(), 'GMT+2', 'dd/MM/yyyy') !== Utilities.formatDate(new Date(), 'GMT+2', 'dd/MM/yyyy')
+    Utilities.formatDate(new Date(dateCell.getValue()), 'GMT+2', 'dd/MM/yyyy') !== Utilities.formatDate(new Date(), 'GMT+2', 'dd/MM/yyyy')
     || usdRateCell.getValue() === ''
     || uahRateCell.getValue() === ''
   ) {
@@ -83,14 +83,14 @@ function getCategories() {
   return categoriesSheet.getDataRange().getValues();
 }
 
-// function postData(date, category, amount, currency, comment, subcategory) {
-function postData(date, category, amount, currency, comment) {
-  console.log(`running: postData`);
+function postData(date, category, amount, currency, comment, subcategory) {
+  console.log(`running: postData()`);
   console.log(`date: ${date}`);
   console.log(`category: ${category}`);
   console.log(`amount: ${amount}`);
-  console.log(` currency: ${currency}`);
-  console.log(` comment: ${comment}`);
+  console.log(`currency: ${currency}`);
+  console.log(`comment: ${comment}`);
+  console.log(`subcategory: ${subcategory}`);
   categories = getCategories().map(function (arr) {return arr[0];});
   let today = date === '' ? new Date() : new Date(date);
   let day = today.getDate();
@@ -287,9 +287,16 @@ function getCategoryIndex(category) {
   }
 }
 
-function setAmount(yOffset, xOffset, category, amount, currency, comment) {
-  console.log(`running: setAmount(yOffset: ${yOffset}, xOffset: ${xOffset}, category: ${category}, amount: ${amount}, comment: ${comment})`);
-  if (amount != '') {
+function setAmount(yOffset, xOffset, category, amount, currency, comment, subcategory) {
+  console.log(`running: setAmount()`);
+  console.log(`yOffset: ${yOffset}`);
+  console.log(`xOffset: ${xOffset}`);
+  console.log(`category: ${category}`);
+  console.log(`amount: ${amount}`);
+  console.log(`currency: ${currency}`);
+  console.log(`comment: ${comment}`);
+  console.log(`subcategory: ${subcategory}`);
+  if (amount !== '') {
     amount = amount.toString().replace(',', '.');
     let amountComment = `${amount} ${currency}`;
     if (currency !== 'EUR') {
@@ -311,6 +318,6 @@ function setAmount(yOffset, xOffset, category, amount, currency, comment) {
     } else {
       cell.setValue((amount.includes('+') || amount.includes('-') || amount.includes('/') || amount.includes('*')) ? `=${amount}` : amount);
     }
-    cell.setComment(`${cell.getComment()}\n* ${amountComment}: ${comment}`.trim());
+    cell.setComment(`${cell.getComment()}\n* ${amountComment}: ${subcategory !== '- - -' ? subcategory : comment}`.trim());
   }
 }
