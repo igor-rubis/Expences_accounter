@@ -83,6 +83,15 @@ function getCategories() {
   return categoriesSheet.getDataRange().getValues();
 }
 
+function getIncomeCategories() {
+  let name = 'Income categories';
+  let categoriesSheet = spreadsheet.getSheetByName(name);
+  if (categoriesSheet == null) {
+    categoriesSheet = spreadsheet.insertSheet(name);
+  }
+  return categoriesSheet.getDataRange().getValues();
+}
+
 function postData(date, category, amount, currency, comment, subcategory) {
   console.log(`running: postData()`);
   console.log(`date: ${date}`);

@@ -97,7 +97,7 @@
   }
 
   function revealSubCategories() {
-    let subCategorySelect = document.getElementById('subCategory')
+    let subCategorySelect = document.getElementById('subCategory');
     subCategorySelect.classList.add('hidden');
     subCategorySelect.classList.remove('hidden');
     let subCategories = document.querySelectorAll('#subCategory option');
@@ -125,18 +125,26 @@
     document.getElementById(selectId).appendChild(option);
   }
 
+  function addOptionSubcategory(id, className, text, visible) {
+    addOption('subCategory', id, className, text, visible);
+  }
+
   function mapCategories(categoriesData) {
     for (let i = 0; i <= categoriesData.length; i++) {
       console.log(`current category data: ${categoriesData[i]}`);
       let category;
       if (i === categoriesData.length) {
         category = 'Income';
-        addOption('subCategory', i, 0, 'Salario', false);
+        google.script.run.withSuccessHandler(function (incomeCategoriesData) {
+          for (let ii = 0; ii < incomeCategoriesData.length; ii++) {
+            addOptionSubcategory(i, ii, incomeCategoriesData[ii], false);
+          }
+        }).getIncomeCategories();
       } else {
         category = categoriesData[i][0];
         for (let ii = 1; ii < categoriesData[i].length; ii++) {
           if (categoriesData[i][ii] !== '') {
-            addOption('subCategory', i, ii, categoriesData[i][ii], false);
+            addOptionSubcategory(i, ii, categoriesData[i][ii], false);
           }
         }
       }
